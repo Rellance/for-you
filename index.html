@@ -1,0 +1,1300 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Для тебя 💌</title>
+  <meta name="description" content="Тут кое-что секретное. Введи код, чтобы открыть 💖">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#FFD4E1">
+  <meta property="og:title" content="Для тебя кое-что секретное 🔒">
+  <meta property="og:description" content="Введи код, чтобы открыть 💖">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💌</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* =========================================================
+       Цвета и шрифты
+       ========================================================= */
+    :root {
+      --blush: #FFE6EE;
+      --petal: #FFC6D6;
+      --coral: #FF6F7D;
+      --coral-deep: #E2516A;
+      --ink: #6B2443;
+      --ink-soft: #9A5873;
+      --cream: #FFF9F6;
+      --gold: #D9A84E;
+      --gold-soft: #F2D49B;
+      --error: #D7263D;
+      --shadow: 0 18px 40px -16px rgba(178, 52, 92, .45), 0 3px 10px -2px rgba(178, 52, 92, .15);
+
+      --f-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+      --f-body: 'Nunito', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      --f-hand: 'Caveat', 'Segoe Print', 'Comic Sans MS', cursive;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      min-height: 100svh;
+      font-family: var(--f-body);
+      color: var(--ink);
+      background: #FFDDE7;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+    }
+    img { display: block; max-width: 100%; }
+    button { font: inherit; color: inherit; cursor: pointer; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+    }
+
+    /* =========================================================
+       Фон: градиент + летящие сердечки + блёстки
+       ========================================================= */
+    .bg {
+      position: fixed; inset: 0; z-index: -2;
+      background:
+        radial-gradient(120% 70% at 0% 0%, #FFF4F7 0%, rgba(255, 244, 247, 0) 55%),
+        radial-gradient(100% 60% at 100% 100%, #FFC7BD 0%, rgba(255, 199, 189, 0) 60%),
+        linear-gradient(165deg, #FFE8EF 0%, #FFD4E1 48%, #FFCBD3 100%);
+    }
+    .sky { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+
+    .float {
+      position: absolute; left: var(--x); bottom: -70px;
+      width: var(--s); height: var(--s);
+      opacity: var(--o);
+      animation: rise var(--d) linear var(--delay) infinite;
+      will-change: transform;
+    }
+    .float__in { display: block; width: 100%; height: 100%; animation: sway calc(var(--d) / 3) ease-in-out var(--delay) infinite alternate; }
+    .float svg { display: block; width: 100%; height: 100%; fill: var(--c); }
+    @keyframes rise { to { transform: translateY(calc(-100vh - 140px)); } }
+    @keyframes sway {
+      from { transform: translateX(calc(var(--sway) * -1)) rotate(-14deg); }
+      to   { transform: translateX(var(--sway)) rotate(14deg); }
+    }
+
+    .spark {
+      position: absolute; color: var(--gold); font-size: var(--s); line-height: 1;
+      opacity: 0; text-shadow: 0 0 10px rgba(255, 232, 175, .95);
+      animation: twinkle var(--d) ease-in-out var(--delay) infinite;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0; transform: scale(.3) rotate(0deg); }
+      50%      { opacity: .9; transform: scale(1) rotate(45deg); }
+    }
+
+    /* Слой для конфетти и взрывов сердечек */
+    #fx { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 60; pointer-events: none; }
+
+    /* =========================================================
+       Бегущая строка
+       ========================================================= */
+    .ticker { overflow: hidden; white-space: nowrap; }
+    .ticker__track { display: inline-flex; animation: marquee var(--speed, 30s) linear infinite; }
+    .ticker__track span { padding: 0 .7em; }
+    @keyframes marquee { to { transform: translateX(-50%); } }
+
+    /* =========================================================
+       Кнопки
+       ========================================================= */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: .4em;
+      border: 0; border-radius: 999px; font-weight: 800; letter-spacing: .01em;
+      transition: transform .2s ease, box-shadow .2s ease, filter .2s ease, background .3s ease;
+    }
+    .btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+    .btn--primary {
+      color: #fff;
+      background: linear-gradient(135deg, #FF8A92 0%, #FF6F7D 45%, #E2516A 100%);
+      box-shadow: 0 10px 22px -8px rgba(226, 81, 106, .7), inset 0 1px 0 rgba(255, 255, 255, .35);
+    }
+    .btn--primary:active { transform: scale(.97); }
+    @media (hover: hover) {
+      .btn--primary:hover { filter: brightness(1.05); }
+    }
+
+    /* =========================================================
+       ЭКРАН 1 — конверт с замком
+       ========================================================= */
+    .lock {
+      position: relative;
+      min-height: 100svh;
+      display: grid; place-items: center;
+      padding: 104px 16px calc(40px + env(safe-area-inset-bottom));
+      overflow: hidden;
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .lock.leaving { opacity: 0; transform: scale(.97); }
+
+    /* Розовая «секретная» лента сверху */
+    .tape {
+      position: absolute; top: 34px; left: -8%; right: -8%;
+      transform: rotate(-4deg);
+      background: var(--coral);
+      color: #fff;
+      font-weight: 800; font-size: 14px;
+      padding: 9px 0;
+      border-top: 2px solid var(--gold-soft);
+      border-bottom: 2px solid var(--gold-soft);
+      box-shadow: 0 10px 20px -12px rgba(226, 81, 106, .8);
+      --speed: 24s;
+    }
+
+    .envelope {
+      --flap: 112px;
+      position: relative;
+      width: min(100%, 400px);
+      background: var(--cream);
+      border-radius: 10px 10px 24px 24px;
+      box-shadow: var(--shadow);
+      padding: calc(var(--flap) + 48px) 22px 24px;
+      text-align: center;
+      animation: env-in .9s cubic-bezier(.2, .8, .2, 1) both;
+      transition: transform .7s cubic-bezier(.5, 0, .2, 1), opacity .6s ease;
+    }
+    @keyframes env-in { from { opacity: 0; transform: translateY(30px) scale(.96); } }
+
+    .envelope__flap {
+      position: absolute; top: 0; left: 0; right: 0; height: var(--flap);
+      transform-origin: 50% 0;
+      transform: perspective(900px) rotateX(0deg);
+      transition: transform .8s cubic-bezier(.6, 0, .3, 1) .1s;
+      filter: drop-shadow(0 6px 6px rgba(178, 52, 92, .18));
+      z-index: 2;
+    }
+    .envelope__flap::before {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(180deg, #FFDCE5 0%, #FFB9CB 100%);
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+    }
+
+    .seal {
+      position: absolute; z-index: 3;
+      left: 50%; top: calc(var(--flap) - 38px);
+      width: 76px; height: 76px; margin-left: -38px;
+      animation: breathe 3s ease-in-out infinite;
+    }
+    @keyframes breathe { 50% { transform: scale(1.05); } }
+    .seal.wiggle { animation: wiggle .5s ease; }
+    @keyframes wiggle {
+      20% { transform: rotate(-14deg); } 40% { transform: rotate(12deg); }
+      60% { transform: rotate(-8deg); }  80% { transform: rotate(5deg); }
+    }
+    .seal__half { position: absolute; inset: 0; transition: transform .75s cubic-bezier(.3, .7, .3, 1), opacity .75s ease; }
+    /* половинки печати выходят за границы, чтобы тень воска не обрезалась квадратом */
+    .seal__half--l { clip-path: polygon(-40% -40%, 53% -40%, 53% 0, 45% 30%, 56% 55%, 47% 100%, 47% 140%, -40% 140%); }
+    .seal__half--r { clip-path: polygon(53% -40%, 140% -40%, 140% 140%, 47% 140%, 47% 100%, 56% 55%, 45% 30%, 53% 0); }
+    .seal__wax {
+      position: absolute; inset: 0;
+      display: grid; place-items: center;
+      border-radius: 48% 52% 50% 50% / 52% 48% 52% 48%;
+      background: radial-gradient(circle at 34% 28%, #FFA3B1 0%, #EE6079 38%, #C93A5A 75%, #A92C4B 100%);
+      box-shadow:
+        inset 0 -5px 10px rgba(110, 15, 40, .35),
+        inset 0 4px 8px rgba(255, 255, 255, .35),
+        0 6px 14px -4px rgba(150, 30, 60, .55);
+    }
+    .seal__wax::after {
+      content: ""; position: absolute; inset: 9px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(242, 212, 155, .9);
+    }
+    .seal__wax svg { width: 30px; height: 27px; fill: #FFE7C2; filter: drop-shadow(0 1px 0 rgba(120, 20, 45, .5)); }
+
+    .envelope__body { transition: opacity .45s ease .05s, transform .45s ease .05s; }
+
+    .lock__title {
+      font-family: var(--f-display); font-weight: 700;
+      font-size: clamp(27px, 7.4vw, 33px); line-height: 1.08;
+      margin: 0 0 12px; text-wrap: balance;
+    }
+    .lock__sub {
+      margin: 0 0 20px; font-size: 16px; line-height: 1.5;
+      color: var(--ink-soft); text-wrap: pretty;
+    }
+    .lock__hint {
+      display: block; margin-top: 6px;
+      font-family: var(--f-hand); font-size: 22px; line-height: 1.15;
+      color: var(--coral-deep);
+    }
+
+    .code input {
+      width: 100%; height: 66px;
+      border-radius: 16px;
+      border: 1.5px solid var(--gold-soft);
+      background: #fff;
+      text-align: center;
+      font: 700 36px/1 var(--f-display);
+      letter-spacing: .25em; text-indent: .25em;
+      color: var(--ink);
+      caret-color: var(--coral);
+      outline: none;
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+    .code input::placeholder { color: #EBC3CF; }
+    .code input:focus { border-color: var(--coral); box-shadow: 0 0 0 4px rgba(255, 111, 125, .22); }
+    .code.is-error input { border-color: var(--error); box-shadow: 0 0 0 4px rgba(215, 38, 61, .14); }
+    .shake { animation: shake .5s cubic-bezier(.36, .07, .19, .97); }
+    @keyframes shake {
+      10%, 90% { transform: translateX(-2px); }
+      20%, 80% { transform: translateX(4px); }
+      30%, 50%, 70% { transform: translateX(-10px); }
+      40%, 60% { transform: translateX(10px); }
+    }
+
+    .error {
+      min-height: 24px; margin: 10px 0 8px;
+      color: var(--error); font-weight: 800; font-size: 15.5px;
+      opacity: 0; transform: translateY(-4px);
+      transition: opacity .25s ease, transform .25s ease;
+    }
+    .error.show { opacity: 1; transform: none; }
+    .extra-hint {
+      margin: -4px 0 12px;
+      font-family: var(--f-hand); font-size: 21px; color: var(--ink-soft);
+      animation: fade-in .5s ease both;
+    }
+
+    .btn--open { width: 100%; height: 58px; font-size: 18px; }
+
+    .lock__note {
+      margin: 18px 0 0;
+      font-family: var(--f-hand); font-size: 20px; color: var(--ink-soft);
+    }
+
+    /* Анимация открытия конверта */
+    .envelope.opening { animation: none; }
+    .envelope.opening .seal { animation: none; }
+    .envelope.opening .seal__half--l { transform: translate(-50px, 46px) rotate(-38deg); opacity: 0; }
+    .envelope.opening .seal__half--r { transform: translate(50px, 46px) rotate(38deg); opacity: 0; }
+    .envelope.opening .envelope__flap { transform: perspective(900px) rotateX(180deg); }
+    .envelope.opening .envelope__body { opacity: 0; transform: translateY(12px); }
+    .envelope.flyaway { transform: translateY(-46px) scale(.9); opacity: 0; }
+
+    /* =========================================================
+       ЭКРАН 2 — приглашение
+       ========================================================= */
+    .app { position: relative; }
+    .app.show { animation: fade-in .8s ease both; }
+    @keyframes fade-in { from { opacity: 0; } }
+    @keyframes rise-in { from { opacity: 0; transform: translateY(24px); } }
+
+    /* Хедер */
+    .hero {
+      min-height: 84svh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 64px 20px 32px;
+    }
+    .app.show .hero > * { animation: rise-in .9s cubic-bezier(.2, .8, .2, 1) both; }
+    .app.show .hero > :nth-child(2) { animation-delay: .15s; }
+    .app.show .hero > :nth-child(3) { animation-delay: .35s; }
+    .app.show .hero > :nth-child(4) { animation-delay: .5s; }
+    .app.show .hero > :nth-child(5) { animation-delay: .9s; }
+
+    .badge {
+      margin: 0 0 22px;
+      display: inline-flex; align-items: center; gap: .45em;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .7);
+      box-shadow: inset 0 0 0 1.5px rgba(217, 168, 78, .55);
+      font-weight: 800; font-size: 14px; color: var(--ink-soft);
+    }
+    .hero__title {
+      margin: 0;
+      font-family: var(--f-display); font-weight: 700;
+      font-size: clamp(48px, 13vw, 100px); line-height: .98;
+      letter-spacing: -.01em;
+      text-wrap: balance;
+      max-width: 12ch;
+    }
+    .ornament {
+      display: flex; align-items: center; gap: 12px;
+      margin: 26px 0 18px;
+      color: var(--gold); font-size: 18px;
+    }
+    .ornament span { width: 56px; height: 1.5px; background: linear-gradient(90deg, transparent, var(--gold)); }
+    .ornament span:last-child { background: linear-gradient(90deg, var(--gold), transparent); }
+    .hero__invite {
+      margin: 0;
+      font-family: var(--f-display); font-style: italic; font-weight: 600;
+      font-size: clamp(24px, 6.2vw, 34px); line-height: 1.2;
+      color: var(--coral-deep);
+      max-width: 20ch; text-wrap: balance;
+    }
+    .scroll-cue {
+      margin-top: 44px;
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      font-family: var(--f-hand); font-size: 23px;
+      color: var(--ink-soft); text-decoration: none;
+    }
+    .scroll-cue svg { width: 22px; height: 20px; fill: var(--coral); animation: bob 1.6s ease-in-out infinite; }
+    @keyframes bob { 50% { transform: translateY(7px); } }
+
+    /* Лента с милыми фразами */
+    .ribbon-wrap { overflow: hidden; padding: 28px 0 40px; }
+    .ribbon {
+      margin: 0 -4%;
+      transform: rotate(-3deg);
+      background: linear-gradient(90deg, var(--coral), #FF93A3 50%, var(--coral));
+      color: #fff;
+      font-family: var(--f-hand); font-weight: 700; font-size: 27px;
+      padding: 10px 0;
+      border-top: 2px solid var(--gold-soft);
+      border-bottom: 2px solid var(--gold-soft);
+      box-shadow: 0 14px 26px -14px rgba(226, 81, 106, .8);
+      --speed: 38s;
+    }
+
+    /* Галерея-полароиды */
+    .section { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+    .section__title {
+      margin: 0 0 34px; text-align: center;
+      font-family: var(--f-hand); font-weight: 700;
+      font-size: clamp(38px, 10vw, 54px); line-height: 1;
+      color: var(--coral-deep);
+      transform: rotate(-2deg);
+    }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-auto-flow: dense;
+      gap: 34px 16px;
+      align-items: start;
+    }
+    @media (min-width: 820px) {
+      .gallery { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 48px 30px; }
+    }
+
+    .polaroid {
+      position: relative;
+      margin: 0;
+      padding: 9px 9px 0;
+      background: #fff;
+      border-radius: 4px;
+      box-shadow: 0 14px 28px -12px rgba(150, 40, 80, .45), 0 2px 5px rgba(150, 40, 80, .12);
+      rotate: var(--r, 0deg);
+      cursor: zoom-in;
+      transition:
+        opacity .8s ease,
+        translate .8s cubic-bezier(.2, .8, .2, 1),
+        scale .45s cubic-bezier(.2, .8, .2, 1.3),
+        rotate .45s cubic-bezier(.2, .8, .2, 1.3),
+        box-shadow .35s ease;
+      transition-delay: calc(var(--i, 0) * 90ms);
+    }
+    .polaroid:focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
+    .polaroid::before { /* кусочек скотча */
+      content: ""; position: absolute; top: -13px; left: 50%;
+      width: 74px; height: 25px;
+      transform: translateX(-50%) rotate(var(--tr, -4deg));
+      background: var(--tape, rgba(255, 170, 192, .72));
+      box-shadow: 0 1px 2px rgba(150, 40, 80, .12);
+      z-index: 1;
+    }
+    .polaroid img {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      background: var(--blush);
+    }
+    .polaroid--wide { grid-column: span 2; width: min(100%, 520px); justify-self: center; }
+    .polaroid--wide img { aspect-ratio: 16 / 9; }
+    .polaroid figcaption {
+      padding: 9px 4px 13px;
+      text-align: center;
+      font-family: var(--f-hand); font-weight: 500;
+      font-size: clamp(19px, 4.8vw, 24px); line-height: 1.08;
+      color: var(--ink);
+    }
+    @media (hover: hover) {
+      .polaroid.is-in:hover {
+        rotate: 0deg; scale: 1.05;
+        box-shadow: 0 26px 40px -14px rgba(150, 40, 80, .5), 0 3px 8px rgba(150, 40, 80, .14);
+        z-index: 2;
+      }
+    }
+
+    /* Появление при скролле */
+    .reveal { opacity: 0; translate: 0 28px; }
+    .reveal:not(.polaroid) { transition: opacity .8s ease, translate .8s cubic-bezier(.2, .8, .2, 1); }
+    .polaroid.reveal { translate: 0 44px; scale: .9; }
+    .reveal.is-in { opacity: 1; translate: 0 0; }
+    .polaroid.reveal.is-in { scale: 1; }
+
+    /* Интрига */
+    .story { padding: 104px 20px 56px; text-align: center; }
+    .story__title {
+      margin: 0 0 18px;
+      font-family: var(--f-display); font-weight: 700;
+      font-size: clamp(40px, 10.5vw, 70px); line-height: 1.02;
+      text-wrap: balance;
+    }
+    .story__text {
+      margin: 0 auto; max-width: 30ch;
+      font-size: clamp(18px, 4.7vw, 22px); line-height: 1.6;
+      text-wrap: pretty;
+    }
+
+    /* Карточка с деталями */
+    .invite {
+      position: relative;
+      max-width: 460px; margin: 0 auto;
+      padding: 34px 24px 26px;
+      background: var(--cream);
+      border: 1.5px solid var(--gold);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+    }
+    .invite::before {
+      content: ""; position: absolute; inset: 8px;
+      border: 1px solid var(--gold-soft); border-radius: 18px;
+      pointer-events: none;
+    }
+    .invite.thump { animation: thump .35s ease; }
+    @keyframes thump { 40% { transform: scale(.985); } }
+    .invite__title {
+      margin: 0; text-align: center;
+      font-family: var(--f-display); font-style: italic; font-weight: 600;
+      font-size: 32px; line-height: 1.1;
+    }
+    .invite__for {
+      margin: 4px 0 0; text-align: center;
+      font-family: var(--f-hand); font-size: 22px; color: var(--coral-deep);
+    }
+    .details { position: relative; list-style: none; margin: 18px 0 0; padding: 0; }
+    .detail {
+      position: relative;
+      display: grid; grid-template-columns: 48px 1fr; align-items: center; gap: 14px;
+      padding: 13px 0;
+      border-bottom: 1px dashed rgba(217, 168, 78, .5);
+    }
+    .detail:last-child { border-bottom: 0; }
+    .detail__icon {
+      width: 48px; height: 48px; border-radius: 50%;
+      display: grid; place-items: center; font-size: 22px;
+      background: linear-gradient(135deg, #FFE7ED, #FFD2DD);
+      box-shadow: inset 0 0 0 1px rgba(217, 168, 78, .4);
+    }
+    .detail__label { display: block; font-size: 13px; font-weight: 800; color: var(--ink-soft); margin-bottom: 2px; }
+    .detail__value { display: block; font-family: var(--f-display); font-weight: 700; font-size: 23px; line-height: 1.15; }
+    .detail__note { display: block; margin-top: 2px; font-size: 14px; color: var(--ink-soft); }
+    .peek {
+      margin-top: 6px; padding: 5px 12px;
+      border: 0; border-radius: 999px;
+      background: rgba(255, 111, 125, .12); color: var(--coral-deep);
+      font-size: 13.5px; font-weight: 800;
+    }
+    .peek:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+    /* Печать «Бронь подтверждена» */
+    .stamp {
+      position: absolute; right: 2px; top: 50%; margin-top: -26px; z-index: 2;
+      white-space: nowrap;
+      padding: 7px 12px;
+      border: 3px solid var(--coral-deep); border-radius: 12px;
+      color: var(--coral-deep);
+      font-weight: 800; font-size: 14px; line-height: 1.15; text-align: center;
+      background: rgba(255, 249, 246, .55);
+      transform: rotate(-12deg);
+      opacity: 0; pointer-events: none;
+    }
+    .invite.stamped .stamp { animation: stamp .55s cubic-bezier(.2, .9, .3, 1.3) forwards; }
+    .invite.stamped.no-anim .stamp { animation: none; opacity: .92; }
+    @keyframes stamp {
+      0%   { opacity: 0; transform: rotate(-12deg) scale(2.6); }
+      60%  { opacity: 1; transform: rotate(-12deg) scale(.92); }
+      100% { opacity: .92; transform: rotate(-12deg) scale(1); }
+    }
+
+    /* Обратный отсчёт */
+    .countdown { margin-top: 20px; padding-top: 18px; border-top: 2px dashed rgba(217, 168, 78, .55); text-align: center; }
+    .countdown__label { margin: 0 0 10px; font-family: var(--f-hand); font-size: 23px; color: var(--coral-deep); }
+    .countdown__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .cd { padding: 10px 2px 8px; border-radius: 14px; background: #fff; box-shadow: inset 0 0 0 1px rgba(217, 168, 78, .4); }
+    .cd b { display: block; font-family: var(--f-display); font-weight: 700; font-size: 31px; line-height: 1; font-variant-numeric: tabular-nums; }
+    .cd span { font-size: 12px; font-weight: 700; color: var(--ink-soft); }
+    .countdown__now { margin: 0; font-family: var(--f-display); font-weight: 700; font-size: 26px; }
+
+    /* Кнопка согласия + убегающая кнопка */
+    .cta {
+      position: relative;
+      max-width: 520px; min-height: 250px; margin: 0 auto;
+      padding: 52px 16px 24px;
+      display: flex; flex-direction: column; align-items: center; gap: 18px;
+    }
+    .btn--yes {
+      padding: 21px 28px;
+      font-size: clamp(16px, 4.6vw, 22px);
+      white-space: nowrap;
+      animation: pulse 1.7s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%   { transform: scale(1);     box-shadow: 0 0 0 0 rgba(255, 111, 125, .55), 0 14px 28px -10px rgba(226, 81, 106, .8); }
+      50%  { transform: scale(1.05); }
+      70%  { box-shadow: 0 0 0 22px rgba(255, 111, 125, 0), 0 14px 28px -10px rgba(226, 81, 106, .8); }
+      100% { transform: scale(1);     box-shadow: 0 0 0 0 rgba(255, 111, 125, 0), 0 14px 28px -10px rgba(226, 81, 106, .8); }
+    }
+    .btn--yes.done {
+      animation: none;
+      background: linear-gradient(135deg, #EBC274 0%, #D9A84E 100%);
+      box-shadow: 0 12px 24px -10px rgba(170, 120, 40, .7);
+    }
+    .btn--no {
+      padding: 11px 18px;
+      font-size: 15px; font-weight: 700;
+      color: var(--ink-soft);
+      background: rgba(255, 255, 255, .75);
+      box-shadow: inset 0 0 0 1.5px rgba(154, 88, 115, .25);
+      transition: left .35s cubic-bezier(.3, 1.4, .5, 1), top .35s cubic-bezier(.3, 1.4, .5, 1), opacity .4s ease, transform .4s ease;
+      touch-action: manipulation;
+    }
+    .btn--no.loose { position: absolute; margin: 0; }
+    .btn--no.gone { opacity: 0; transform: scale(.4); pointer-events: none; }
+
+    .foot {
+      padding: 36px 20px calc(48px + env(safe-area-inset-bottom));
+      text-align: center;
+      font-family: var(--f-hand); font-size: 23px; color: var(--ink-soft);
+    }
+
+    /* =========================================================
+       Всплывающее окно, лайтбокс, тост
+       ========================================================= */
+    .modal, .lightbox {
+      position: fixed; inset: 0;
+      display: grid; place-items: center;
+      padding: 20px;
+      opacity: 0; transition: opacity .3s ease;
+      -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px);
+    }
+    .modal { z-index: 50; background: rgba(107, 36, 67, .35); }
+    .modal.open, .lightbox.open { opacity: 1; }
+    .modal__card {
+      width: min(100%, 380px);
+      padding: 34px 24px 22px;
+      text-align: center;
+      background: var(--cream);
+      border: 1.5px solid var(--gold); border-radius: 26px;
+      box-shadow: var(--shadow);
+      transform: translateY(24px) scale(.92);
+      transition: transform .45s cubic-bezier(.2, .9, .3, 1.25);
+    }
+    .modal.open .modal__card { transform: none; }
+    .modal__emoji { font-size: 60px; line-height: 1; animation: beat 1.2s ease-in-out infinite; }
+    @keyframes beat { 15% { transform: scale(1.15); } 30% { transform: scale(1); } 45% { transform: scale(1.1); } 60% { transform: scale(1); } }
+    .modal__title { margin: 14px 0 8px; font-family: var(--f-display); font-weight: 700; font-size: 31px; line-height: 1.08; text-wrap: balance; }
+    .modal__text { margin: 0 0 22px; font-size: 18px; line-height: 1.5; }
+    .modal__actions { display: grid; gap: 8px; }
+    .modal__actions .btn--primary { padding: 16px 20px; font-size: 17px; }
+    .btn--ghost { padding: 12px; background: transparent; color: var(--ink-soft); font-weight: 700; }
+
+    .lightbox { z-index: 40; background: rgba(90, 25, 55, .55); }
+    .lightbox__frame {
+      margin: 0;
+      max-width: min(92vw, 560px);
+      padding: 12px 12px 0;
+      background: #fff; border-radius: 6px;
+      box-shadow: 0 30px 60px -20px rgba(60, 10, 30, .6);
+      rotate: -1.5deg; scale: .9;
+      transition: scale .35s cubic-bezier(.2, .9, .3, 1.3);
+    }
+    .lightbox.open .lightbox__frame { scale: 1; }
+    .lightbox__frame img { width: auto; max-width: 100%; max-height: 70svh; margin: 0 auto; object-fit: contain; }
+    .lightbox__frame figcaption { padding: 10px 6px 14px; text-align: center; font-family: var(--f-hand); font-size: 27px; line-height: 1.1; }
+    .lb-btn {
+      position: absolute;
+      width: 46px; height: 46px; border: 0; border-radius: 50%;
+      display: grid; place-items: center;
+      background: rgba(255, 255, 255, .92); color: var(--ink);
+      font-size: 24px; line-height: 1;
+      box-shadow: 0 6px 16px -6px rgba(60, 10, 30, .5);
+    }
+    .lb-btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+    .lb-close { top: calc(14px + env(safe-area-inset-top)); right: 14px; }
+    .lb-prev { left: 10px; top: 50%; translate: 0 -50%; }
+    .lb-next { right: 10px; top: 50%; translate: 0 -50%; }
+
+    .toast {
+      position: fixed; left: 50%; bottom: calc(26px + env(safe-area-inset-bottom)); z-index: 45;
+      max-width: calc(100% - 32px);
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: var(--ink); color: #fff;
+      font-weight: 700; font-size: 15px; text-align: center;
+      box-shadow: 0 12px 26px -10px rgba(60, 10, 30, .6);
+      transform: translate(-50%, 20px); opacity: 0;
+      transition: transform .3s ease, opacity .3s ease;
+      pointer-events: none;
+    }
+    .toast.show { transform: translate(-50%, 0); opacity: 1; }
+
+    /* Для тех, у кого отключена анимация в системе */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .float, .spark { display: none; }
+      .ticker__track { animation-duration: 120s; }
+      .btn--yes, .seal, .modal__emoji, .scroll-cue svg { animation: none; }
+      .reveal, .polaroid.reveal { opacity: 1; translate: 0 0; scale: 1; transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg" aria-hidden="true"></div>
+  <div class="sky" id="sky" aria-hidden="true"></div>
+  <canvas id="fx" aria-hidden="true"></canvas>
+
+  <!-- ===================== ЭКРАН 1: ЗАМОК ===================== -->
+  <main class="lock" id="lock">
+    <div class="tape ticker" aria-hidden="true">
+      <div class="ticker__track">
+        <span>совершенно секретно ♡</span><span>только для тебя ♡</span><span>доступ по любви ♡</span><span>посторонним вход воспрещён 🤫</span>
+        <span>совершенно секретно ♡</span><span>только для тебя ♡</span><span>доступ по любви ♡</span><span>посторонним вход воспрещён 🤫</span>
+      </div>
+    </div>
+
+    <div class="envelope" id="envelope">
+      <div class="envelope__flap" aria-hidden="true"></div>
+      <div class="seal" id="seal" aria-hidden="true">
+        <span class="seal__half seal__half--l"><span class="seal__wax"><svg viewBox="0 0 32 29"><path d="M16 28.5C6 21 0 15.2 0 8.6A8.5 8.5 0 0 1 16 4.6 8.5 8.5 0 0 1 32 8.6C32 15.2 26 21 16 28.5Z"/></svg></span></span>
+        <span class="seal__half seal__half--r"><span class="seal__wax"><svg viewBox="0 0 32 29"><path d="M16 28.5C6 21 0 15.2 0 8.6A8.5 8.5 0 0 1 16 4.6 8.5 8.5 0 0 1 32 8.6C32 15.2 26 21 16 28.5Z"/></svg></span></span>
+      </div>
+
+      <div class="envelope__body">
+        <h1 class="lock__title">Доступ к секретному материалу заблокирован 🔒</h1>
+        <p class="lock__sub">
+          Чтобы разблокировать, введи секретный код
+          <span class="lock__hint">(Подсказка: Сумма чисел даты нашего знакомства)</span>
+        </p>
+
+        <form id="lock-form" novalidate>
+          <div class="code" id="code-wrap">
+            <label class="sr-only" for="code">Секретный код</label>
+            <input id="code" name="code" type="text" inputmode="numeric" autocomplete="off"
+                   maxlength="8" placeholder="•••" enterkeyhint="go" aria-describedby="error">
+          </div>
+          <p class="error" id="error" role="alert"></p>
+          <p class="extra-hint" id="extra-hint" hidden></p>
+          <button type="submit" class="btn btn--primary btn--open">Открыть 💖</button>
+        </form>
+        <p class="lock__note">только для одной-единственной 💗</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- ===================== ЭКРАН 2: ПРИГЛАШЕНИЕ ===================== -->
+  <div class="app" id="app" hidden>
+    <header class="hero">
+      <p class="badge">🔓 доступ открыт</p>
+      <h1 class="hero__title">Ура! Ты взломала систему 🥳</h1>
+      <div class="ornament" aria-hidden="true"><span></span>♡<span></span></div>
+      <p class="hero__invite">Официальное приглашение на&nbsp;настоящее свидание!</p>
+      <a class="scroll-cue" href="#moments">
+        листай вниз
+        <svg viewBox="0 0 32 29" aria-hidden="true"><path d="M16 28.5C6 21 0 15.2 0 8.6A8.5 8.5 0 0 1 16 4.6 8.5 8.5 0 0 1 32 8.6C32 15.2 26 21 16 28.5Z"/></svg>
+      </a>
+    </header>
+
+    <div class="ribbon-wrap" aria-hidden="true">
+      <div class="ribbon ticker">
+        <div class="ticker__track">
+          <span>ты моя самая любимая ♡</span><span>я скучаю, даже когда ты рядом ♡</span><span>твоя улыбка — мой любимый вид ♡</span><span>с тобой даже понедельник — праздник ♡</span><span>ты — мой человек ♡</span><span>спасибо, что ты есть ♡</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Фото: чтобы заменить, положи свою картинку в папку photos и поменяй src и подпись -->
+    <section class="section" id="moments" aria-labelledby="moments-title">
+      <h2 class="section__title reveal" id="moments-title">Наши моменты 📸</h2>
+      <div class="gallery">
+        <figure class="polaroid reveal" style="--r:-3deg; --i:0">
+          <img src="photos/01-street.jpg" alt="Мы вдвоём на летней улочке" width="825" height="1100" loading="lazy" decoding="async">
+          <figcaption>Те самые летние улочки ☀️</figcaption>
+        </figure>
+        <figure class="polaroid reveal" style="--r:2.5deg; --i:1; --tr:5deg; --tape:rgba(242,212,155,.8)">
+          <img src="photos/02-home.jpg" alt="Уютное селфи дома" width="825" height="1100" loading="lazy" decoding="async">
+          <figcaption>Моё любимое место — рядом с тобой</figcaption>
+        </figure>
+        <figure class="polaroid reveal" style="--r:-1.5deg; --i:0; --tr:-6deg">
+          <img src="photos/03-forest.jpg" alt="Селфи среди сосен" width="825" height="1100" loading="lazy" decoding="async">
+          <figcaption>Солнце, сосны и мы 🌲</figcaption>
+        </figure>
+        <figure class="polaroid polaroid--wide reveal" style="--r:1.5deg; --i:1; --tr:3deg; --tape:rgba(242,212,155,.8)">
+          <img src="photos/04-masks.jpg" alt="Мы в тканевых масках" width="1100" height="619" loading="lazy" decoding="async">
+          <figcaption>Спа-салон «У нас дома» 🧖‍♀️</figcaption>
+        </figure>
+        <figure class="polaroid reveal" style="--r:2deg; --i:1; --tr:-3deg">
+          <img src="photos/05-mirror.jpg" alt="Селфи в зеркале в кожаных куртках" width="704" height="1100" loading="lazy" decoding="async">
+          <figcaption>Мы в одном стиле 🖤</figcaption>
+        </figure>
+        <figure class="polaroid reveal" style="--r:-2.5deg; --i:0; --tr:4deg; --tape:rgba(242,212,155,.8)">
+          <img src="photos/06-christmas.jpg" alt="Мы у новогодней ёлки с котиком" width="824" height="1100" loading="lazy" decoding="async">
+          <figcaption>Ёлка, котик и ты 🎄</figcaption>
+        </figure>
+        <figure class="polaroid reveal" style="--r:3deg; --i:1; --tr:-5deg">
+          <img src="photos/07-cafe.jpg" alt="Селфи в кафе" width="825" height="1100" loading="lazy" decoding="async">
+          <figcaption>Перекусы — это мило… но</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="story">
+      <h2 class="story__title reveal">И всё только начинается... ✨</h2>
+      <p class="story__text reveal">Хватит просто сидеть дома или ходить перекусить. Тебя ждет настоящий вечер романтики!</p>
+    </section>
+
+    <section class="section" aria-labelledby="invite-title">
+      <article class="invite reveal" id="invite">
+        <h2 class="invite__title" id="invite-title">Детали свидания</h2>
+        <p class="invite__for">только для тебя ♡</p>
+
+        <ul class="details">
+          <li class="detail">
+            <span class="detail__icon" aria-hidden="true">📅</span>
+            <span><span class="detail__label">Дата</span><span class="detail__value">Суббота, 24 октября</span></span>
+          </li>
+          <li class="detail">
+            <span class="detail__icon" aria-hidden="true">🕒</span>
+            <span><span class="detail__label">Время</span><span class="detail__value">15:00</span></span>
+            <span class="stamp" aria-hidden="true">Бронь<br>подтверждена ♡</span>
+          </li>
+          <li class="detail">
+            <span class="detail__icon" aria-hidden="true">👗</span>
+            <span><span class="detail__label">Дресс-код</span><span class="detail__value">Твой самый лучший лук!</span></span>
+          </li>
+          <li class="detail">
+            <span class="detail__icon" aria-hidden="true">📍</span>
+            <span>
+              <span class="detail__label">Локация</span>
+              <span class="detail__value">Секрет 🤫</span>
+              <span class="detail__note">детали раскроются позже</span>
+              <button class="peek" id="peek" type="button">подсмотреть 👀</button>
+            </span>
+          </li>
+        </ul>
+
+        <div class="countdown" id="countdown" aria-live="off">
+          <p class="countdown__label">до нашего свидания</p>
+          <div class="countdown__grid">
+            <div class="cd"><b id="cd-d">0</b><span id="cd-dl">дней</span></div>
+            <div class="cd"><b id="cd-h">0</b><span id="cd-hl">часов</span></div>
+            <div class="cd"><b id="cd-m">0</b><span id="cd-ml">минут</span></div>
+            <div class="cd"><b id="cd-s">0</b><span id="cd-sl">секунд</span></div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="cta" id="cta">
+      <button class="btn btn--primary btn--yes" id="yes" type="button">Я принимаю приглашение! 💖</button>
+      <button class="btn btn--no" id="no" type="button">Я подумаю 🙈</button>
+    </section>
+
+    <footer class="foot">сделано с любовью специально для тебя ♡</footer>
+  </div>
+
+  <!-- Всплывающее окно после согласия -->
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+    <div class="modal__card">
+      <div class="modal__emoji" aria-hidden="true">🥰</div>
+      <h2 class="modal__title" id="modal-title">Еее! Бронирование подтверждено!</h2>
+      <p class="modal__text">Жду тебя с нетерпением 😘</p>
+      <div class="modal__actions">
+        <button class="btn btn--primary" id="reply" type="button">Написать мне «Да» 💌</button>
+        <button class="btn btn--ghost" id="modal-close" type="button">Закрыть</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Просмотр фото -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Просмотр фото" hidden>
+    <figure class="lightbox__frame">
+      <img id="lb-img" src="" alt="">
+      <figcaption id="lb-cap"></figcaption>
+    </figure>
+    <button class="lb-btn lb-close" id="lb-close" type="button" aria-label="Закрыть">✕</button>
+    <button class="lb-btn lb-prev" id="lb-prev" type="button" aria-label="Предыдущее фото">‹</button>
+    <button class="lb-btn lb-next" id="lb-next" type="button" aria-label="Следующее фото">›</button>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+  (() => {
+    'use strict';
+
+    /* ======================= НАСТРОЙКИ ======================= */
+    const CORRECT_PASSWORD = 2034; // Укажи здесь итоговое число (5 + 4 + 2025 — мы вместе с 05.04.2025)
+    const ALSO_ACCEPT = [18]; // Запасной вариант: если сложит цифры 0+5+0+4+2+0+2+5 — тоже пустим
+    const DATE_ISO = '2026-10-24T15:00:00+03:00'; // Дата и время свидания для обратного отсчёта (время Финляндии)
+    const EXTRA_HINT = 'Ещё подсказка: день, когда мы начали встречаться 💕 Сложи день, месяц и год'; // Появится после 3 неверных попыток ('' — не показывать)
+    const REPLY_TEXT = 'Я принимаю приглашение! Жду субботу 💖'; // Этот текст она отправит тебе кнопкой «Написать мне „Да“»
+    /* ========================================================= */
+
+    const $ = (id) => document.getElementById(id);
+    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const STORAGE_KEY = 'date-invite-accepted';
+    const store = {
+      get() { try { return localStorage.getItem(STORAGE_KEY) === '1'; } catch (e) { return false; } },
+      set() { try { localStorage.setItem(STORAGE_KEY, '1'); } catch (e) {} },
+      clear() { try { localStorage.removeItem(STORAGE_KEY); } catch (e) {} },
+    };
+    if (/[?&]reset\b/.test(location.search)) store.clear(); // открой сайт с ?reset, чтобы сбросить «принято»
+
+    const rnd = (a, b) => a + Math.random() * (b - a);
+    const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+    const HEART_SVG = '<svg viewBox="0 0 32 29"><path d="M16 28.5C6 21 0 15.2 0 8.6A8.5 8.5 0 0 1 16 4.6 8.5 8.5 0 0 1 32 8.6C32 15.2 26 21 16 28.5Z"/></svg>';
+
+    /* ---------- Бегущие строки: дублируем содержимое для бесшовной прокрутки ---------- */
+    document.querySelectorAll('.ticker__track').forEach((track) => { track.innerHTML += track.innerHTML; });
+
+    /* ---------- Летящие сердечки и блёстки на фоне ---------- */
+    (function makeSky() {
+      if (reduceMotion) return;
+      const sky = $('sky');
+      const colors = ['#FF6F7D', '#FF9EB0', '#FFB8C9', '#FFFFFF', '#E9B65F', '#F7C6D2'];
+      const hearts = innerWidth < 600 ? 16 : 26;
+      const frag = document.createDocumentFragment();
+      for (let i = 0; i < hearts; i++) {
+        const el = document.createElement('span');
+        el.className = 'float';
+        const d = rnd(11, 24);
+        el.style.cssText = `--x:${rnd(-2, 98)}%;--s:${rnd(12, 34)}px;--d:${d}s;--delay:${-rnd(0, d)}s;--sway:${rnd(10, 34)}px;--o:${rnd(.35, .85)};--c:${pick(colors)}`;
+        el.innerHTML = `<span class="float__in">${HEART_SVG}</span>`;
+        frag.appendChild(el);
+      }
+      const sparks = innerWidth < 600 ? 10 : 18;
+      for (let i = 0; i < sparks; i++) {
+        const el = document.createElement('span');
+        el.className = 'spark';
+        el.textContent = '✦';
+        el.style.cssText = `left:${rnd(2, 96)}%;top:${rnd(2, 96)}%;--s:${rnd(9, 20)}px;--d:${rnd(2.5, 5)}s;--delay:${-rnd(0, 5)}s`;
+        frag.appendChild(el);
+      }
+      sky.appendChild(frag);
+    })();
+
+    /* ---------- Конфетти, салют и взрывы сердечек (canvas, без библиотек) ---------- */
+    const FX = (() => {
+      const canvas = $('fx');
+      const ctx = canvas.getContext('2d');
+      const COLORS = ['#FF6F7D', '#FF9EB0', '#FFC6D6', '#E2516A', '#F2D49B', '#D9A84E', '#FFFFFF'];
+      const HEART = new Path2D('M0 -0.3C-0.5 -0.95 -1.25 -0.25 0 0.75C1.25 -0.25 0.5 -0.95 0 -0.3Z');
+      const k = reduceMotion ? 0.3 : 1;
+      let W = 0, H = 0, parts = [], raf = 0, last = 0;
+
+      function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        W = innerWidth; H = innerHeight;
+        canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      addEventListener('resize', resize);
+      resize();
+
+      function add(p) {
+        parts.push(Object.assign({
+          rot: rnd(0, Math.PI * 2), vr: rnd(-0.12, 0.12),
+          tilt: rnd(0, Math.PI * 2), vt: rnd(0.05, 0.18),
+          drag: 0.985, g: 0.16, life: 1, decay: rnd(0.006, 0.012),
+          shape: pick(['heart', 'heart', 'rect', 'circle']), color: pick(COLORS), size: rnd(6, 12), sway: false,
+        }, p));
+        if (!raf) { last = performance.now(); raf = requestAnimationFrame(loop); }
+      }
+
+      function burst(x, y, opts = {}) {
+        const n = Math.round((opts.count || 80) * k);
+        const power = opts.power || 11;
+        for (let i = 0; i < n; i++) {
+          const a = rnd(0, Math.PI * 2), s = rnd(0.25, 1) * power;
+          add({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - power * 0.25,
+                shape: pick(['heart', 'heart', 'heart', 'rect', 'circle']), size: rnd(7, 15) });
+        }
+      }
+
+      function rain(count = 140) {
+        const n = Math.round(count * k);
+        for (let i = 0; i < n; i++) {
+          add({ x: rnd(0, W), y: rnd(-H * 0.7, -10), vx: rnd(-1, 1), vy: rnd(1.5, 4),
+                g: 0.05, drag: 0.995, decay: rnd(0.0025, 0.005), size: rnd(6, 12), sway: true });
+        }
+      }
+
+      function fireworks(duration = 1800) {
+        if (reduceMotion) { burst(W / 2, H / 3, { count: 120 }); return; }
+        const end = performance.now() + duration;
+        (function shot() {
+          burst(rnd(W * 0.15, W * 0.85), rnd(H * 0.12, H * 0.45), { count: 46, power: rnd(7, 10) });
+          if (performance.now() < end) setTimeout(shot, rnd(170, 320));
+        })();
+      }
+
+      function loop(now) {
+        const dt = Math.min(48, now - last) / 16.67;
+        last = now;
+        ctx.clearRect(0, 0, W, H);
+        for (let i = parts.length - 1; i >= 0; i--) {
+          const p = parts[i];
+          const drag = Math.pow(p.drag, dt);
+          p.vx *= drag;
+          p.vy = p.vy * drag + p.g * dt;
+          if (p.sway) p.vx += Math.sin(p.tilt) * 0.04 * dt;
+          p.x += p.vx * dt; p.y += p.vy * dt;
+          p.rot += p.vr * dt; p.tilt += p.vt * dt;
+          p.life -= p.decay * dt;
+          if (p.life <= 0 || p.y > H + 40) { parts.splice(i, 1); continue; }
+
+          ctx.save();
+          ctx.globalAlpha = Math.min(1, p.life * 2.5);
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rot);
+          ctx.fillStyle = p.color;
+          if (p.shape === 'heart') {
+            ctx.scale(p.size * 0.8, p.size * 0.8);
+            ctx.fill(HEART);
+          } else if (p.shape === 'rect') {
+            ctx.scale(1, Math.cos(p.tilt));
+            ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+          } else {
+            ctx.beginPath(); ctx.arc(0, 0, p.size / 3, 0, Math.PI * 2); ctx.fill();
+          }
+          ctx.restore();
+        }
+        if (parts.length) raf = requestAnimationFrame(loop);
+        else { raf = 0; ctx.clearRect(0, 0, W, H); }
+      }
+
+      return { burst, rain, fireworks };
+    })();
+
+    /* ---------- Тост ---------- */
+    let toastTimer = 0;
+    function toast(text) {
+      const t = $('toast');
+      t.textContent = text;
+      t.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+    }
+
+    /* ================= ЭКРАН 1: ввод кода ================= */
+    const lock = $('lock'), envelope = $('envelope'), seal = $('seal');
+    const form = $('lock-form'), input = $('code'), codeWrap = $('code-wrap');
+    const errorEl = $('error'), extraHint = $('extra-hint');
+    let tries = 0, unlocking = false;
+
+    input.addEventListener('input', () => {
+      input.value = input.value.replace(/\D/g, '').slice(0, 8);
+      codeWrap.classList.remove('is-error');
+      errorEl.classList.remove('show');
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const value = input.value.replace(/\D/g, '');
+      const accepted = [CORRECT_PASSWORD, ...ALSO_ACCEPT].map(Number);
+      if (value !== '' && accepted.includes(Number(value))) unlock();
+      else wrong(value === '');
+    });
+
+    function restartAnim(el, cls) {
+      el.classList.remove(cls);
+      void el.offsetWidth; // перезапуск анимации
+      el.classList.add(cls);
+    }
+
+    function wrong(isEmpty) {
+      tries += isEmpty ? 0 : 1;
+      errorEl.textContent = isEmpty ? 'Сначала введи код 🙂' : 'Неверно! Попробуй еще раз 😉';
+      errorEl.classList.add('show');
+      codeWrap.classList.add('is-error');
+      restartAnim(codeWrap, 'shake');
+      restartAnim(seal, 'wiggle');
+      if (navigator.vibrate) navigator.vibrate(120);
+      if (tries >= 3 && EXTRA_HINT) { extraHint.textContent = EXTRA_HINT; extraHint.hidden = false; }
+      input.focus();
+      input.select();
+    }
+    seal.addEventListener('animationend', () => seal.classList.remove('wiggle'));
+    codeWrap.addEventListener('animationend', () => codeWrap.classList.remove('shake'));
+
+    function unlock() {
+      if (unlocking) return;
+      unlocking = true;
+      input.blur();
+      errorEl.classList.remove('show');
+      const s = seal.getBoundingClientRect();
+      envelope.classList.add('opening');
+      FX.burst(s.left + s.width / 2, s.top + s.height / 2, { count: 110, power: 12 });
+      if (navigator.vibrate) navigator.vibrate([30, 40, 60]);
+
+      setTimeout(() => {
+        envelope.classList.add('flyaway');
+        FX.burst(innerWidth / 2, innerHeight * 0.42, { count: 80, power: 15 });
+      }, 750);
+      setTimeout(() => lock.classList.add('leaving'), 950);
+      setTimeout(showApp, 1500);
+    }
+
+    /* ================= ЭКРАН 2 ================= */
+    const app = $('app');
+
+    function showApp() {
+      lock.hidden = true;
+      app.hidden = false;
+      app.classList.add('show');
+      window.scrollTo(0, 0);
+      FX.rain(150);
+      startCountdown();
+      initReveal();
+    }
+
+    /* Появление элементов при прокрутке */
+    function initReveal() {
+      const items = document.querySelectorAll('.reveal');
+      if (!('IntersectionObserver' in window)) { items.forEach((el) => el.classList.add('is-in')); return; }
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const el = entry.target;
+          el.classList.add('is-in');
+          io.unobserve(el);
+          setTimeout(() => el.style.setProperty('--i', 0), 1400); // убираем задержку, чтобы ховер был мгновенным
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -5% 0px' });
+      items.forEach((el) => io.observe(el));
+    }
+
+    /* Обратный отсчёт */
+    function plural(n, forms) {
+      const n10 = n % 10, n100 = n % 100;
+      if (n10 === 1 && n100 !== 11) return forms[0];
+      if (n10 >= 2 && n10 <= 4 && (n100 < 12 || n100 > 14)) return forms[1];
+      return forms[2];
+    }
+    let cdTimer = 0;
+    function startCountdown() {
+      const target = new Date(DATE_ISO).getTime();
+      const box = $('countdown');
+      const units = [
+        ['cd-d', 'cd-dl', 864e5, Infinity, ['день', 'дня', 'дней']],
+        ['cd-h', 'cd-hl', 36e5, 24, ['час', 'часа', 'часов']],
+        ['cd-m', 'cd-ml', 6e4, 60, ['минута', 'минуты', 'минут']],
+        ['cd-s', 'cd-sl', 1e3, 60, ['секунда', 'секунды', 'секунд']],
+      ];
+      function tick() {
+        const diff = target - Date.now();
+        if (diff <= 0) {
+          clearInterval(cdTimer);
+          const past = diff < -12 * 36e5;
+          box.innerHTML = `<p class="countdown__now">${past ? 'Это было волшебно 💞' : 'Это сегодня! Я уже жду 💃'}</p>`;
+          return;
+        }
+        units.forEach(([numId, labelId, ms, mod, forms]) => {
+          const raw = Math.floor(diff / ms);
+          const n = mod === Infinity ? raw : raw % mod;
+          $(numId).textContent = n;
+          $(labelId).textContent = plural(n, forms);
+        });
+      }
+      tick();
+      cdTimer = setInterval(tick, 1000);
+    }
+
+    /* Кнопка «подсмотреть» у локации */
+    const peekLines = ['Не-а! Узнаешь ближе к делу 😏', 'Сказал же — секрет 🤫', 'Терпение, моя хорошая 💗', 'Даже не пытайся 😄'];
+    let peekCount = 0;
+    $('peek').addEventListener('click', () => { toast(peekLines[peekCount++ % peekLines.length]); });
+
+    /* Галерея: просмотр фото на весь экран */
+    const photos = Array.from(document.querySelectorAll('.polaroid'));
+    const lb = $('lightbox'), lbImg = $('lb-img'), lbCap = $('lb-cap');
+    let current = 0, lastFocus = null;
+
+    photos.forEach((p, i) => {
+      p.tabIndex = 0;
+      p.setAttribute('role', 'button');
+      p.setAttribute('aria-label', 'Открыть фото: ' + p.querySelector('figcaption').textContent);
+      p.addEventListener('click', () => openLightbox(i));
+      p.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLightbox(i); }
+      });
+    });
+
+    function renderLightbox() {
+      const p = photos[current];
+      const img = p.querySelector('img');
+      lbImg.src = img.getAttribute('src');
+      lbImg.alt = img.alt;
+      lbCap.textContent = p.querySelector('figcaption').textContent;
+    }
+    function openLightbox(i) {
+      lastFocus = document.activeElement;
+      current = i;
+      renderLightbox();
+      lb.hidden = false;
+      requestAnimationFrame(() => lb.classList.add('open'));
+      document.body.style.overflow = 'hidden';
+      $('lb-close').focus();
+    }
+    function closeLightbox() {
+      lb.classList.remove('open');
+      document.body.style.overflow = '';
+      setTimeout(() => { lb.hidden = true; }, 300);
+      if (lastFocus) lastFocus.focus({ preventScroll: true });
+    }
+    function step(dir) { current = (current + dir + photos.length) % photos.length; renderLightbox(); }
+
+    $('lb-close').addEventListener('click', closeLightbox);
+    $('lb-prev').addEventListener('click', (e) => { e.stopPropagation(); step(-1); });
+    $('lb-next').addEventListener('click', (e) => { e.stopPropagation(); step(1); });
+    lb.addEventListener('click', (e) => { if (e.target === lb) closeLightbox(); });
+
+    let touchX = null;
+    lb.addEventListener('touchstart', (e) => { touchX = e.touches[0].clientX; }, { passive: true });
+    lb.addEventListener('touchend', (e) => {
+      if (touchX === null) return;
+      const dx = e.changedTouches[0].clientX - touchX;
+      if (Math.abs(dx) > 50) step(dx < 0 ? 1 : -1);
+      touchX = null;
+    });
+
+    /* Убегающая кнопка «Я подумаю» */
+    const cta = $('cta'), yes = $('yes'), no = $('no');
+    const dodgeTexts = ['Я подумаю 🙈', 'Не-а 😜', 'Мимо!', 'Попробуй ещё 😏', 'Не догонишь 🏃‍♀️', 'Ну пожалуйста 🥺', 'Ладно, ты победила 💖'];
+    let dodges = 0;
+
+    function overlaps(a, b) {
+      return !(a.right < b.left - 12 || a.left > b.right + 12 || a.bottom < b.top - 12 || a.top > b.bottom + 12);
+    }
+    function dodge(e) {
+      if (e) e.preventDefault();
+      if (no.classList.contains('gone')) return;
+      dodges++;
+      if (dodges >= dodgeTexts.length - 1) {
+        no.textContent = dodgeTexts[dodgeTexts.length - 1];
+        setTimeout(() => no.classList.add('gone'), 1100);
+        return;
+      }
+      no.textContent = dodgeTexts[dodges];
+      const area = cta.getBoundingClientRect();
+      if (!no.classList.contains('loose')) {
+        const r = no.getBoundingClientRect();
+        no.style.left = (r.left - area.left) + 'px';
+        no.style.top = (r.top - area.top) + 'px';
+        no.classList.add('loose');
+      }
+      const b = no.getBoundingClientRect();
+      const y = yes.getBoundingClientRect();
+      let x = 0, top = 0;
+      for (let t = 0; t < 30; t++) {
+        x = rnd(0, Math.max(0, area.width - b.width));
+        top = rnd(0, Math.max(0, area.height - b.height));
+        const box = { left: area.left + x, top: area.top + top, right: area.left + x + b.width, bottom: area.top + top + b.height };
+        if (!overlaps(box, y)) break;
+      }
+      no.style.left = x + 'px';
+      no.style.top = top + 'px';
+    }
+    no.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') dodge(); });
+    no.addEventListener('pointerdown', dodge);
+    no.addEventListener('click', dodge);
+
+    /* Кнопка согласия */
+    const invite = $('invite'), modal = $('modal');
+    let accepted = store.get();
+
+    function markAccepted() {
+      yes.classList.add('done');
+      yes.textContent = 'Приглашение принято 💖';
+      no.classList.add('gone');
+    }
+    if (accepted) {
+      markAccepted();
+      invite.classList.add('stamped', 'no-anim');
+    }
+
+    yes.addEventListener('click', () => {
+      if (accepted) { openModal(); return; }
+      accepted = true;
+      store.set();
+      const r = yes.getBoundingClientRect();
+      FX.burst(r.left + r.width / 2, r.top + r.height / 2, { count: 130, power: 15 });
+      FX.fireworks(1900);
+      FX.rain(170);
+      if (navigator.vibrate) navigator.vibrate([40, 60, 40, 60, 120]);
+      markAccepted();
+      setTimeout(openModal, 650);
+    });
+
+    function openModal() {
+      modal.hidden = false;
+      requestAnimationFrame(() => modal.classList.add('open'));
+      $('reply').focus({ preventScroll: true });
+    }
+    function closeModal() {
+      modal.classList.remove('open');
+      setTimeout(() => {
+        modal.hidden = true;
+        if (!invite.classList.contains('stamped')) {
+          invite.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
+          setTimeout(() => {
+            invite.classList.add('stamped');
+            restartAnim(invite, 'thump');
+            const s = invite.querySelector('.stamp').getBoundingClientRect();
+            FX.burst(s.left + s.width / 2, s.top + s.height / 2, { count: 40, power: 8 });
+          }, 700);
+        }
+      }, 300);
+    }
+    $('modal-close').addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+    /* «Написать мне „Да“» — открывает меню «Поделиться» на телефоне */
+    $('reply').addEventListener('click', async () => {
+      const btn = $('reply');
+      if (navigator.share) {
+        try { await navigator.share({ text: REPLY_TEXT }); } catch (e) { /* закрыла меню — ничего страшного */ }
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(REPLY_TEXT);
+        btn.textContent = 'Скопировано! Отправь мне 💌';
+      } catch (e) {
+        btn.textContent = REPLY_TEXT;
+      }
+    });
+
+    /* Esc закрывает окна, стрелки листают фото */
+    document.addEventListener('keydown', (e) => {
+      if (!lb.hidden) {
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowRight') step(1);
+        if (e.key === 'ArrowLeft') step(-1);
+      } else if (!modal.hidden && e.key === 'Escape') {
+        closeModal();
+      }
+    });
+
+    /* Заранее подгружаем фото, пока она вводит код */
+    addEventListener('load', () => {
+      photos.forEach((p) => { const img = new Image(); img.src = p.querySelector('img').getAttribute('src'); });
+    });
+  })();
+  </script>
+</body>
+</html>
