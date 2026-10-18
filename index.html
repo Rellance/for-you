@@ -600,7 +600,7 @@
     .modal__title { margin: 14px 0 8px; font-family: var(--f-display); font-weight: 700; font-size: 31px; line-height: 1.08; text-wrap: balance; }
     .modal__text { margin: 0 0 22px; font-size: 18px; line-height: 1.5; }
     .modal__actions { display: grid; gap: 8px; }
-    .modal__actions .btn--primary { padding: 16px 20px; font-size: 17px; }
+    .modal__actions .btn--primary { padding: 16px 20px; font-size: 17px; text-decoration: none; }
     .btn--ghost { padding: 12px; background: transparent; color: var(--ink-soft); font-weight: 700; }
 
     .lightbox { z-index: 40; background: rgba(90, 25, 55, .55); }
@@ -814,7 +814,7 @@
       <h2 class="modal__title" id="modal-title">Еее! Бронирование подтверждено!</h2>
       <p class="modal__text">Жду тебя с нетерпением 😘</p>
       <div class="modal__actions">
-        <button class="btn btn--primary" id="reply" type="button">Написать мне «Да» 💌</button>
+        <a class="btn btn--primary" id="reply" href="https://t.me/prodamraba" target="_blank" rel="noopener">Написать мне «Да» 💌</a>
         <button class="btn btn--ghost" id="modal-close" type="button">Закрыть</button>
       </div>
     </div>
@@ -842,7 +842,8 @@
     const ALSO_ACCEPT = [18]; // Запасной вариант: если сложит цифры 0+5+0+4+2+0+2+5 — тоже пустим
     const DATE_ISO = '2026-10-24T15:00:00+03:00'; // Дата и время свидания для обратного отсчёта (время Финляндии)
     const EXTRA_HINT = 'Ещё подсказка: день, когда мы начали встречаться 💕 Сложи день, месяц и год'; // Появится после 3 неверных попыток ('' — не показывать)
-    const REPLY_TEXT = 'Я принимаю приглашение! Жду субботу 💖'; // Этот текст она отправит тебе кнопкой «Написать мне „Да“»
+    const TELEGRAM = 'prodamraba'; // Твой ник в Telegram (без @) — кнопка «Написать мне „Да“» откроет чат с тобой
+    const REPLY_TEXT = 'Я принимаю приглашение! Жду субботу 💖'; // Этот текст уже будет набран в поле сообщения
     /* ========================================================= */
 
     const $ = (id) => document.getElementById(id);
@@ -1264,20 +1265,8 @@
     $('modal-close').addEventListener('click', closeModal);
     modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-    /* «Написать мне „Да“» — открывает меню «Поделиться» на телефоне */
-    $('reply').addEventListener('click', async () => {
-      const btn = $('reply');
-      if (navigator.share) {
-        try { await navigator.share({ text: REPLY_TEXT }); } catch (e) { /* закрыла меню — ничего страшного */ }
-        return;
-      }
-      try {
-        await navigator.clipboard.writeText(REPLY_TEXT);
-        btn.textContent = 'Скопировано! Отправь мне 💌';
-      } catch (e) {
-        btn.textContent = REPLY_TEXT;
-      }
-    });
+    /* «Написать мне „Да“» — открывает чат в Telegram с уже набранным текстом */
+    $('reply').href = 'https://t.me/' + TELEGRAM + '?text=' + encodeURIComponent(REPLY_TEXT);
 
     /* Esc закрывает окна, стрелки листают фото */
     document.addEventListener('keydown', (e) => {
